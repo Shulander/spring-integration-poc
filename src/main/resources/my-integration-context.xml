@@ -19,7 +19,16 @@
     <int:service-activator ref="printService" method="printMessageWithMessageNumber" input-channel="queueChannel">
         <int:poller fixed-rate="1" time-unit="SECONDS" max-messages-per-poll="2"/>
     </int:service-activator>
-
     <int:gateway service-interface="us.vicentini.integration.PrinterGateway"
                  default-request-channel="queueChannel"/>
+
+    <!-- Priority Queue Channel -->
+    <int:channel id="priorityChannel">
+        <int:priority-queue capacity="10"/>
+    </int:channel>
+    <int:service-activator ref="printService" method="printMessageWithMessageNumber" input-channel="priorityChannel">
+        <int:poller fixed-rate="1" time-unit="SECONDS" max-messages-per-poll="2"/>
+    </int:service-activator>
+    <int:gateway service-interface="us.vicentini.integration.PrinterGateway" id="priorityPrinterGateway"
+                 default-request-channel="priorityChannel"/>
 </beans>
