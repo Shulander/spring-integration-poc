@@ -1,4 +1,4 @@
-package com.oreilly.demo;
+package us.vicenini.integration;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

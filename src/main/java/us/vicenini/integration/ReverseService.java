@@ -1,4 +1,4 @@
-package com.oreilly.demo;
+package us.vicenini.integration;
 
 public class ReverseService {
 

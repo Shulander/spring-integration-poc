@@ -6,7 +6,7 @@
 		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-5.2.xsd">
 
 	<!-- Endpoint -->	
-	<int:gateway service-interface="com.oreilly.demo.CustomGateway" default-request-channel="inputChannel">
+	<int:gateway service-interface="us.vicenini.integration.CustomGateway" default-request-channel="inputChannel">
 		<int:method name="print"/>	
 	</int:gateway>
 
@@ -17,9 +17,9 @@
 	<int:service-activator ref="reverseService" input-channel="inputChannel" method="reverse"/>
 
 	<!-- Spring Bean -->
-	<bean id="printService" class="com.oreilly.demo.PrintService"/>
+	<bean id="printService" class="us.vicenini.integration.PrintService"/>
 
 	<!--  Spring Bean -->
-	<bean id="reverseService" class="com.oreilly.demo.ReverseService"/>
+	<bean id="reverseService" class="us.vicenini.integration.ReverseService"/>
 
 </beans>
