@@ -10,6 +10,9 @@ public class PrintService {
 
 
     public void print(Message<String> message) {
+        message.getHeaders().forEach((s, o) -> {
+            System.out.printf("'%s': %s%n", s, o);
+        });
         System.out.println(message.getPayload());
     }
 }

@@ -8,8 +8,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.support.GenericMessage;
 
 @SpringBootApplication
 @Configuration
@@ -34,7 +34,10 @@ public class SpringIntegrationDemoApplication implements ApplicationRunner {
 	@Bean
 	ApplicationRunner appRunner() {
 		return arg0 -> {
-			Message<String> message = new GenericMessage<>("Hello World for services");
+			Message<String> message = MessageBuilder.withPayload("Hello World for services")
+					.setHeader("newHeader", "new header value")
+					.build();
+
 			PrintService service = new PrintService();
 			service.print(message);
 		};
