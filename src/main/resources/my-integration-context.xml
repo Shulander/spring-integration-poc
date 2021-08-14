@@ -23,8 +23,9 @@
                  default-request-channel="queueChannel"/>
 
     <!-- Priority Queue Channel -->
+    <bean id="oddEvenComparator" class="us.vicentini.integration.PriorityQueueChannelAppRunner.CustomMessageComparator"/>
     <int:channel id="priorityChannel">
-        <int:priority-queue capacity="10"/>
+        <int:priority-queue capacity="10" comparator="oddEvenComparator"/>
     </int:channel>
     <int:service-activator ref="printService" method="printMessageWithMessageNumber" input-channel="priorityChannel">
         <int:poller fixed-rate="1" time-unit="SECONDS" max-messages-per-poll="2"/>

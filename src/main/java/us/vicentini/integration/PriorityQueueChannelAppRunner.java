@@ -10,6 +10,7 @@ import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -27,7 +28,7 @@ public class PriorityQueueChannelAppRunner implements ApplicationRunner {
         List<Future<Message<String>>> futures = new ArrayList<>();
 
         for (int i = 0; i < 10; i++) {
-            Message<String> message = MessageBuilder.withPayload("Printing message payload for " + i)
+            Message<String> message = MessageBuilder.withPayload("Printing priority payload for " + i)
                     .setHeader("messageNumber", i)
                     .setPriority(i)
                     .build();
@@ -39,6 +40,17 @@ public class PriorityQueueChannelAppRunner implements ApplicationRunner {
         log.info("Reading responses");
         for (Future<Message<String>> future : futures) {
             log.info("Future message: {}", future.get().getPayload());
+        }
+    }
+
+
+    public static class CustomMessageComparator implements Comparator<Message<String>> {
+
+        @Override
+        public int compare(Message<String> o1, Message<String> o2) {
+            boolean oneIsEven = o1.getPayload().charAt(o1.getPayload().length() - 1) % 2 == 0;
+            boolean twoIsEven = o2.getPayload().charAt(o2.getPayload().length() - 1) % 2 == 0;
+            return Boolean.compare(oneIsEven, twoIsEven);
         }
     }
 }
