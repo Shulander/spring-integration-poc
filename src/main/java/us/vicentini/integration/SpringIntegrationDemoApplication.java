@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.integration.channel.DirectChannel;
+import org.springframework.integration.core.MessagingTemplate;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 
@@ -18,8 +19,6 @@ public class SpringIntegrationDemoApplication {
 
 	@Autowired
 	private DirectChannel inputChannel;
-	@Autowired
-	private DirectChannel outputChannel;
 
 
 	public static void main(String[] args) {
@@ -30,14 +29,13 @@ public class SpringIntegrationDemoApplication {
 	@Bean
 	ApplicationRunner appRunner() {
 		return arg0 -> {
-			outputChannel.subscribe(message -> log.info("Output Channel: {}", message.getPayload()));
-
-
 			Message<String> message = MessageBuilder.withPayload("Hello World for services")
 					.setHeader("newHeader", "new header value")
 					.build();
 
-			inputChannel.send(message);
+			MessagingTemplate template = new MessagingTemplate();
+			Message<?> responseMessage = template.sendAndReceive(inputChannel, message);
+			log.info("Response Message: {}", responseMessage.getPayload());
 		};
 	}
 }
