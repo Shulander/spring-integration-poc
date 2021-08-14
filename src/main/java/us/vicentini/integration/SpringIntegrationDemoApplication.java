@@ -1,7 +1,7 @@
 package us.vicentini.integration;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,13 +11,16 @@ import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 
+@Slf4j
 @SpringBootApplication
 @ImportResource("classpath:my-integration-context.xml")
 public class SpringIntegrationDemoApplication {
 
 	@Autowired
-	@Qualifier("messageChannel")
-	private DirectChannel channel;
+	private DirectChannel inputChannel;
+	@Autowired
+	private DirectChannel outputChannel;
+
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringIntegrationDemoApplication.class, args);
@@ -27,17 +30,14 @@ public class SpringIntegrationDemoApplication {
 	@Bean
 	ApplicationRunner appRunner() {
 		return arg0 -> {
-			channel.subscribe(message -> {
-				PrintService service = new PrintService();
-				service.print((Message<String>) message);
-			});
+			outputChannel.subscribe(message -> log.info("Output Channel: {}", message.getPayload()));
 
 
 			Message<String> message = MessageBuilder.withPayload("Hello World for services")
 					.setHeader("newHeader", "new header value")
 					.build();
 
-			channel.send(message);
+			inputChannel.send(message);
 		};
 	}
 }

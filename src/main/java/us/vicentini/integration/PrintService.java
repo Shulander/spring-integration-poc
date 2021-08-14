@@ -1,18 +1,21 @@
 package us.vicentini.integration;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 
+@Slf4j
 public class PrintService {
 
     public void print(String message) {
-        System.out.println(message);
+        log.info(message);
     }
 
 
-    public void print(Message<String> message) {
-        message.getHeaders().forEach((s, o) -> {
-            System.out.printf("'%s': %s%n", s, o);
-        });
-        System.out.println(message.getPayload());
+    public Message<String> printMessage(Message<String> message) {
+        message.getHeaders().forEach((s, o) -> log.info("'{}': {}", s, o));
+        log.info(message.getPayload());
+
+        return MessageBuilder.withPayload("Response Message for messageId: " + message.getHeaders().get("id")).build();
     }
 }
