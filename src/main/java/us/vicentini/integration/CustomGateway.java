@@ -1,4 +1,4 @@
-package us.vicenini.integration;
+package us.vicentini.integration;
 
 public interface CustomGateway {
 

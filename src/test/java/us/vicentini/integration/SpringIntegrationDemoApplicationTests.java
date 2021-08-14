@@ -1,4 +1,4 @@
-package us.vicenini.integration;
+package us.vicentini.integration;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
