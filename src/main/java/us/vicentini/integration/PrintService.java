@@ -10,6 +10,7 @@ public class PrintService {
     public Message<String> printMessage(Message<String> message) {
         log.info(message.getPayload());
 
+//        throw new RuntimeException("Error printing message");
         return MessageBuilder.withPayload("Response Message for messageId: " + message.getHeaders().get("id")).build();
     }
 

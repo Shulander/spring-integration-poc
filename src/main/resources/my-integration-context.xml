@@ -6,15 +6,17 @@
 		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-5.2.xsd">
 
     <!-- Direct Channel -->
-    <int:channel id="inputChannel"/>
+    <int:channel id="inputChannel">
+        <int:dispatcher failover="true"/>
+    </int:channel>
     <int:gateway service-interface="us.vicentini.integration.PrinterGateway"
                  default-request-channel="inputChannel"/>
 
     <bean id="printService" class="us.vicentini.integration.PrintService"/>
     <bean id="uppercasePrintService" class="us.vicentini.integration.UppercasePrintService"/>
 
-    <int:service-activator ref="printService" method="printMessage" input-channel="inputChannel"/>
-    <int:service-activator ref="uppercasePrintService" method="printMessage" input-channel="inputChannel"/>
+    <int:service-activator order="1" ref="printService" method="printMessage" input-channel="inputChannel"/>
+    <int:service-activator order="2" ref="uppercasePrintService" method="printMessage" input-channel="inputChannel"/>
 
     <!-- Queue Channel -->
     <int:channel id="queueChannel">
