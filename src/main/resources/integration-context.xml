@@ -17,9 +17,9 @@
 	<int:service-activator ref="reverseService" input-channel="inputChannel" method="reverse"/>
 
 	<!-- Spring Bean -->
-	<bean id="printService" class="us.vicentini.integration.PrintService"/>
+	<bean id="printService" class="us.vicentini.integration.service.PrintService"/>
 
 	<!--  Spring Bean -->
-	<bean id="reverseService" class="us.vicentini.integration.ReverseService"/>
+	<bean id="reverseService" class="us.vicentini.integration.service.ReverseService"/>
 
 </beans>

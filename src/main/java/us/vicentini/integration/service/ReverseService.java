@@ -1,4 +1,4 @@
-package us.vicentini.integration;
+package us.vicentini.integration.service;
 
 public class ReverseService {
 

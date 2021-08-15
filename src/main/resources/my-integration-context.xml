@@ -12,8 +12,8 @@
     <int:gateway service-interface="us.vicentini.integration.PrinterGateway"
                  default-request-channel="inputChannel"/>
 
-    <bean id="printService" class="us.vicentini.integration.PrintService"/>
-    <bean id="uppercasePrintService" class="us.vicentini.integration.UppercasePrintService"/>
+    <bean id="printService" class="us.vicentini.integration.service.PrintService"/>
+    <bean id="uppercasePrintService" class="us.vicentini.integration.service.UppercasePrintService"/>
 
     <int:service-activator order="1" ref="printService" method="printMessage" input-channel="inputChannel"/>
     <int:service-activator order="2" ref="uppercasePrintService" method="printMessage" input-channel="inputChannel"/>
@@ -29,7 +29,7 @@
                  default-request-channel="queueChannel"/>
 
     <!-- Priority Queue Channel -->
-    <bean id="oddEvenComparator" class="us.vicentini.integration.PriorityQueueChannelAppRunner.CustomMessageComparator"/>
+    <bean id="oddEvenComparator" class="us.vicentini.integration.runner.PriorityQueueChannelAppRunner.CustomMessageComparator"/>
     <int:channel id="priorityChannel">
         <int:priority-queue capacity="10" comparator="oddEvenComparator"/>
     </int:channel>

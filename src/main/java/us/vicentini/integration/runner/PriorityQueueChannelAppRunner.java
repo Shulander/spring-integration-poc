@@ -1,4 +1,4 @@
-package us.vicentini.integration;
+package us.vicentini.integration.runner;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
+import us.vicentini.integration.PrinterGateway;
 
 import java.util.ArrayList;
 import java.util.Comparator;

@@ -1,4 +1,4 @@
-package us.vicentini.integration;
+package us.vicentini.integration.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.integration.support.MessageBuilder;
