@@ -11,6 +11,7 @@
     <bean id="printService" class="us.vicentini.integration.service.PrintService"/>
     <bean id="uppercasePrintService" class="us.vicentini.integration.service.UppercasePrintService"/>
     <bean id="oddEvenComparator" class="us.vicentini.integration.runner.PriorityQueueChannelAppRunner.CustomMessageComparator"/>
+    <bean id="myInterceptor" class="us.vicentini.integration.CustomChannelInterceptor"/>
 
     <!-- Direct Channel -->
     <int:channel id="inputChannel">
@@ -55,8 +56,11 @@
                  default-request-channel="pollableChannel"/>
     <int:channel id="pollableChannel">
         <int:queue capacity="10"/>
+        <int:interceptors>
+            <int:ref bean="myInterceptor"/>
+        </int:interceptors>
     </int:channel>
-    <int:bridge input-channel="pollableChannel" output-channel="pubSubChannel">
+    <int:bridge input-channel="pollableChannel" output-channel="inputChannel">
         <int:poller fixed-delay="5" time-unit="SECONDS" max-messages-per-poll="2"/>
     </int:bridge>
 </beans>
