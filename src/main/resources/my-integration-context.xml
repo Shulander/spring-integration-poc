@@ -49,4 +49,14 @@
                  default-request-channel="pubSubChannel"/>
     <int:service-activator order="1" ref="printService" method="printMessage" input-channel="pubSubChannel"/>
     <int:service-activator order="2" ref="uppercasePrintService" method="printMessage" input-channel="pubSubChannel"/>
+
+    <!-- Messaging Bridge -->
+    <int:gateway id="bridgePrinterGateway" service-interface="us.vicentini.integration.PrinterGateway"
+                 default-request-channel="pollableChannel"/>
+    <int:channel id="pollableChannel">
+        <int:queue capacity="10"/>
+    </int:channel>
+    <int:bridge input-channel="pollableChannel" output-channel="pubSubChannel">
+        <int:poller fixed-delay="5" time-unit="SECONDS" max-messages-per-poll="2"/>
+    </int:bridge>
 </beans>
