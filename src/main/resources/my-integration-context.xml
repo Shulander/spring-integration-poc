@@ -5,12 +5,16 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-5.2.xsd">
 
-    <!-- Channel -->
+    <!-- Direct Channel -->
     <int:channel id="inputChannel"/>
+    <int:gateway service-interface="us.vicentini.integration.PrinterGateway"
+                 default-request-channel="inputChannel"/>
 
-    <bean class="us.vicentini.integration.PrintService" id="printService"/>
+    <bean id="printService" class="us.vicentini.integration.PrintService"/>
+    <bean id="uppercasePrintService" class="us.vicentini.integration.UppercasePrintService"/>
 
     <int:service-activator ref="printService" method="printMessage" input-channel="inputChannel"/>
+    <int:service-activator ref="uppercasePrintService" method="printMessage" input-channel="inputChannel"/>
 
     <!-- Queue Channel -->
     <int:channel id="queueChannel">
@@ -19,7 +23,7 @@
     <int:service-activator ref="printService" method="printMessageWithMessageNumber" input-channel="queueChannel">
         <int:poller fixed-rate="1" time-unit="SECONDS" max-messages-per-poll="2"/>
     </int:service-activator>
-    <int:gateway service-interface="us.vicentini.integration.PrinterGateway"
+    <int:gateway service-interface="us.vicentini.integration.PrinterGateway" id="queuePrinterGateway"
                  default-request-channel="queueChannel"/>
 
     <!-- Priority Queue Channel -->

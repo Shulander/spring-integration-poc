@@ -5,18 +5,10 @@ import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 
 @Slf4j
-public class PrintService {
+public class UppercasePrintService {
 
     public Message<String> printMessage(Message<String> message) {
-        log.info(message.getPayload());
-
+        log.info(message.getPayload().toUpperCase());
         return MessageBuilder.withPayload("Response Message for messageId: " + message.getHeaders().get("id")).build();
-    }
-
-
-    public Message<String> printMessageWithMessageNumber(Message<String> message) {
-        log.info(message.getPayload());
-        Object messageNumber = message.getHeaders().get("messageNumber");
-        return MessageBuilder.withPayload("Response Message for message: #" + messageNumber).build();
     }
 }
