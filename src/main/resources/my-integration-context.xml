@@ -2,8 +2,15 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:task="http://www.springframework.org/schema/task"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-5.2.xsd">
+		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-5.2.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd">
+
+    <!-- BEANS-->
+    <bean id="printService" class="us.vicentini.integration.service.PrintService"/>
+    <bean id="uppercasePrintService" class="us.vicentini.integration.service.UppercasePrintService"/>
+    <bean id="oddEvenComparator" class="us.vicentini.integration.runner.PriorityQueueChannelAppRunner.CustomMessageComparator"/>
 
     <!-- Direct Channel -->
     <int:channel id="inputChannel">
@@ -11,9 +18,6 @@
     </int:channel>
     <int:gateway service-interface="us.vicentini.integration.PrinterGateway"
                  default-request-channel="inputChannel"/>
-
-    <bean id="printService" class="us.vicentini.integration.service.PrintService"/>
-    <bean id="uppercasePrintService" class="us.vicentini.integration.service.UppercasePrintService"/>
 
     <int:service-activator order="1" ref="printService" method="printMessage" input-channel="inputChannel"/>
     <int:service-activator order="2" ref="uppercasePrintService" method="printMessage" input-channel="inputChannel"/>
@@ -29,7 +33,6 @@
                  default-request-channel="queueChannel"/>
 
     <!-- Priority Queue Channel -->
-    <bean id="oddEvenComparator" class="us.vicentini.integration.runner.PriorityQueueChannelAppRunner.CustomMessageComparator"/>
     <int:channel id="priorityChannel">
         <int:priority-queue capacity="10" comparator="oddEvenComparator"/>
     </int:channel>
@@ -38,4 +41,12 @@
     </int:service-activator>
     <int:gateway service-interface="us.vicentini.integration.PrinterGateway" id="priorityPrinterGateway"
                  default-request-channel="priorityChannel"/>
+
+    <!-- Publish Subscribe Channel -->
+    <task:executor id="pubSubExecutor" pool-size="5"/>
+    <int:publish-subscribe-channel id="pubSubChannel" task-executor="pubSubExecutor"/>
+    <int:gateway id="pubSubPrinterGateway" service-interface="us.vicentini.integration.PrinterGateway"
+                 default-request-channel="pubSubChannel"/>
+    <int:service-activator order="1" ref="printService" method="printMessage" input-channel="pubSubChannel"/>
+    <int:service-activator order="2" ref="uppercasePrintService" method="printMessage" input-channel="pubSubChannel"/>
 </beans>
