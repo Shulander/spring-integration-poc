@@ -15,6 +15,7 @@
     <bean id="oddEvenComparator" class="us.vicentini.integration.runner.channel.PriorityQueueChannelAppRunner.CustomMessageComparator"/>
     <bean id="myInterceptor" class="us.vicentini.integration.CustomChannelInterceptor"/>
     <bean id="customRouter" class="us.vicentini.integration.CustomRouter"/>
+    <bean id="customFilter" class="us.vicentini.integration.CustomFilter"/>
 
     <!-- Direct Channel -->
     <int:channel id="inputChannel">
@@ -117,5 +118,11 @@
     <int:gateway id="filterGateway" service-interface="us.vicentini.integration.PrinterGateway"
                  default-request-channel="filterChannel"/>
     <int:filter expression="payload.equals(4)" input-channel="filterChannel" output-channel="stringChannel"/>
+
+    <!-- Recipient list Router S05L37-->
+    <int:channel id="customFilterChannel"/>
+    <int:gateway id="customFilterGateway" service-interface="us.vicentini.integration.PrinterGateway"
+                 default-request-channel="customFilterChannel"/>
+    <int:filter ref="customFilter" input-channel="customFilterChannel" output-channel="stringChannel"/>
 
 </beans>
