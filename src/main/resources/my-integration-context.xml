@@ -111,4 +111,11 @@
     <int:channel id="stringChannel" />
     <int:channel id="defaultChannel" />
 
+
+    <!-- Recipient list Router S05L36-->
+    <int:channel id="filterChannel"/>
+    <int:gateway id="filterGateway" service-interface="us.vicentini.integration.PrinterGateway"
+                 default-request-channel="filterChannel"/>
+    <int:filter expression="payload.equals(4)" input-channel="filterChannel" output-channel="stringChannel"/>
+
 </beans>
