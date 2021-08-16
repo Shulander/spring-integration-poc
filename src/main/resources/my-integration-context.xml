@@ -16,8 +16,9 @@
     <bean id="myInterceptor" class="us.vicentini.integration.CustomChannelInterceptor"/>
     <bean id="customRouter" class="us.vicentini.integration.CustomRouter"/>
     <bean id="customFilter" class="us.vicentini.integration.CustomFilter"/>
-    <bean id="customSplitter" class="us.vicentini.integration.CustomSplitter"/>
+    <bean id="customSplitter" class="us.vicentini.integration.CustomSplitter" scope="prototype"/>
     <bean id="hyphenCustomSplitter" class="us.vicentini.integration.CustomSplitter.HyphenCustomSplitter"/>
+    <bean id="customAggregator" class="us.vicentini.integration.CustomAggregator"/>
 
     <!-- Direct Channel -->
     <int:channel id="inputChannel">
@@ -133,5 +134,12 @@
                  default-request-channel="customSplitterChannel"/>
     <int:splitter ref="customSplitter" input-channel="customSplitterChannel" output-channel="spaceSplitChannel"/>
     <int:splitter ref="hyphenCustomSplitter" method="split" input-channel="spaceSplitChannel" output-channel="stringChannel"/>
+
+    <!-- Recipient list Router S05L39-41-->
+    <int:channel id="aggregatorChannel"/>
+    <int:gateway id="aggregatorGateway" service-interface="us.vicentini.integration.PrinterGateway"
+                 default-request-channel="aggregatorChannel"/>
+    <int:splitter ref="customSplitter" input-channel="aggregatorChannel" output-channel="aggChannel"/>
+    <int:aggregator ref="customAggregator" input-channel="aggChannel" output-channel="stringChannel" />
 
 </beans>
