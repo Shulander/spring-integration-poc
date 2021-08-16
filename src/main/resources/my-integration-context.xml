@@ -88,7 +88,14 @@
         <int:mapping value="int" channel="intChannel"/>
         <int:mapping value="string" channel="stringChannel"/>
     </int:header-value-router>
-    <int:service-activator order="1" ref="printService" method="printMessage" input-channel="stringChannel"/>
-    <int:service-activator order="2" ref="numericPrintService" method="printMessage" input-channel="intChannel"/>
+
+    <!-- Recipient list Router S05L32-->
+    <int:channel id="recipientListRouterChannel"/>
+    <int:gateway id="recipientListRouterGateway" service-interface="us.vicentini.integration.PrinterGateway"
+                 default-request-channel="recipientListRouterChannel"/>
+    <int:recipient-list-router input-channel="recipientListRouterChannel">
+        <int:recipient selector-expression="payload.equals(5)" channel="intChannel"/>
+        <int:recipient channel="stringChannel"/>
+    </int:recipient-list-router>
 
 </beans>
