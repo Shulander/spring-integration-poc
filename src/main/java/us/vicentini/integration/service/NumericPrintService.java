@@ -6,7 +6,7 @@ import org.springframework.messaging.Message;
 @Slf4j
 public class NumericPrintService {
 
-    public void printMessage(Message<String> message) {
+    public void printMessage(Message<?> message) {
         log.info("Printing the numeric: {}", message.getPayload());
     }
 }

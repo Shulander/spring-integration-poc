@@ -79,4 +79,16 @@
     <int:service-activator order="1" ref="printService" method="printMessage" input-channel="stringChannel"/>
     <int:service-activator order="2" ref="numericPrintService" method="printMessage" input-channel="intChannel"/>
 
+    <!-- Header Value Router S05L31-->
+    <int:channel id="headerRouterChannel"/>
+    <int:gateway id="headerRouterGateway" service-interface="us.vicentini.integration.PrinterGateway"
+                 default-request-channel="headerRouterChannel"/>
+
+    <int:header-value-router input-channel="headerRouterChannel" header-name="routeHeader">
+        <int:mapping value="int" channel="intChannel"/>
+        <int:mapping value="string" channel="stringChannel"/>
+    </int:header-value-router>
+    <int:service-activator order="1" ref="printService" method="printMessage" input-channel="stringChannel"/>
+    <int:service-activator order="2" ref="numericPrintService" method="printMessage" input-channel="intChannel"/>
+
 </beans>
