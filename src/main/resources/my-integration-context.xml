@@ -14,6 +14,7 @@
     <bean id="defaultPrintService" class="us.vicentini.integration.service.DefaultPrintService"/>
     <bean id="oddEvenComparator" class="us.vicentini.integration.runner.channel.PriorityQueueChannelAppRunner.CustomMessageComparator"/>
     <bean id="myInterceptor" class="us.vicentini.integration.CustomChannelInterceptor"/>
+    <bean id="customRouter" class="us.vicentini.integration.CustomRouter"/>
 
     <!-- Direct Channel -->
     <int:channel id="inputChannel">
@@ -99,5 +100,15 @@
         <int:recipient selector-expression="payload.equals(51)" channel="stringChannel"/>
     </int:recipient-list-router>
     <int:service-activator ref="defaultPrintService" method="printMessage" input-channel="defaultChannel"/>
+
+
+    <!-- Recipient list Router S05L34/35-->
+    <int:channel id="customRouterChannel"/>
+    <int:gateway id="customRouterGateway" service-interface="us.vicentini.integration.PrinterGateway"
+                 default-request-channel="customRouterChannel"/>
+    <int:router ref="customRouter" input-channel="customRouterChannel"/>
+    <int:channel id="intChannel" />
+    <int:channel id="stringChannel" />
+    <int:channel id="defaultChannel" />
 
 </beans>
