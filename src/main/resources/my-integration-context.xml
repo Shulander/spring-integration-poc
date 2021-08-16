@@ -11,6 +11,7 @@
     <bean id="printService" class="us.vicentini.integration.service.PrintService"/>
     <bean id="numericPrintService" class="us.vicentini.integration.service.NumericPrintService"/>
     <bean id="uppercasePrintService" class="us.vicentini.integration.service.UppercasePrintService"/>
+    <bean id="defaultPrintService" class="us.vicentini.integration.service.DefaultPrintService"/>
     <bean id="oddEvenComparator" class="us.vicentini.integration.runner.channel.PriorityQueueChannelAppRunner.CustomMessageComparator"/>
     <bean id="myInterceptor" class="us.vicentini.integration.CustomChannelInterceptor"/>
 
@@ -89,13 +90,14 @@
         <int:mapping value="string" channel="stringChannel"/>
     </int:header-value-router>
 
-    <!-- Recipient list Router S05L32-->
+    <!-- Recipient list Router S05L32/33-->
     <int:channel id="recipientListRouterChannel"/>
     <int:gateway id="recipientListRouterGateway" service-interface="us.vicentini.integration.PrinterGateway"
                  default-request-channel="recipientListRouterChannel"/>
-    <int:recipient-list-router input-channel="recipientListRouterChannel">
-        <int:recipient selector-expression="payload.equals(5)" channel="intChannel"/>
-        <int:recipient channel="stringChannel"/>
+    <int:recipient-list-router input-channel="recipientListRouterChannel" default-output-channel="defaultChannel">
+        <int:recipient selector-expression="payload.equals(51)" channel="intChannel"/>
+        <int:recipient selector-expression="payload.equals(51)" channel="stringChannel"/>
     </int:recipient-list-router>
+    <int:service-activator ref="defaultPrintService" method="printMessage" input-channel="defaultChannel"/>
 
 </beans>
