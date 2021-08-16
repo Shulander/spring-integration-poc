@@ -9,8 +9,9 @@
 
     <!-- BEANS-->
     <bean id="printService" class="us.vicentini.integration.service.PrintService"/>
+    <bean id="numericPrintService" class="us.vicentini.integration.service.NumericPrintService"/>
     <bean id="uppercasePrintService" class="us.vicentini.integration.service.UppercasePrintService"/>
-    <bean id="oddEvenComparator" class="us.vicentini.integration.runner.PriorityQueueChannelAppRunner.CustomMessageComparator"/>
+    <bean id="oddEvenComparator" class="us.vicentini.integration.runner.channel.PriorityQueueChannelAppRunner.CustomMessageComparator"/>
     <bean id="myInterceptor" class="us.vicentini.integration.CustomChannelInterceptor"/>
 
     <!-- Direct Channel -->
@@ -63,4 +64,19 @@
     <int:bridge input-channel="pollableChannel" output-channel="inputChannel">
         <int:poller fixed-delay="5" time-unit="SECONDS" max-messages-per-poll="2"/>
     </int:bridge>
+
+    <!-- Payload Type Router S05L30-->
+    <int:channel id="payloadRouterChannel">
+        <int:dispatcher failover="true"/>
+    </int:channel>
+    <int:gateway id="payloadRouterGateway" service-interface="us.vicentini.integration.PrinterGateway"
+                 default-request-channel="payloadRouterChannel"/>
+
+    <int:payload-type-router input-channel="payloadRouterChannel">
+        <int:mapping type="java.lang.Integer" channel="intChannel"/>
+        <int:mapping type="java.lang.String" channel="stringChannel"/>
+    </int:payload-type-router>
+    <int:service-activator order="1" ref="printService" method="printMessage" input-channel="stringChannel"/>
+    <int:service-activator order="2" ref="numericPrintService" method="printMessage" input-channel="intChannel"/>
+
 </beans>

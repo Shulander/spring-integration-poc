@@ -1,4 +1,4 @@
-package us.vicentini.integration.runner;
+package us.vicentini.integration.runner.channel;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -12,50 +12,36 @@ import org.springframework.stereotype.Component;
 import us.vicentini.integration.PrinterGateway;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Future;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@ConditionalOnProperty(value = "runner.PriorityQueueChannelAppRunner", havingValue = "true", matchIfMissing = true)
-public class PriorityQueueChannelAppRunner implements ApplicationRunner {
+@ConditionalOnProperty(value = "runner.channel.DirectChannelAppRunner", havingValue = "true", matchIfMissing = true)
+public class DirectChannelAppRunner implements ApplicationRunner {
 
-    private final PrinterGateway priorityPrinterGateway;
+    private final PrinterGateway printerGateway;
 
 
     @SneakyThrows
     @Override
     public void run(ApplicationArguments args) {
-        log.info("RUNNING PriorityQueueChannelAppRunner !!!");
+        log.info("RUNNING DirectChannelAppRunner !!!");
         List<Future<Message<String>>> futures = new ArrayList<>();
-
         for (int i = 0; i < 10; i++) {
-            Message<String> message = MessageBuilder.withPayload("Printing priority payload for " + i)
+            Message<String> message = MessageBuilder.withPayload("Printing Message payload for " + i)
                     .setHeader("messageNumber", i)
                     .setPriority(i)
                     .build();
 
             log.info("Sending Message: {}", message);
-            futures.add(priorityPrinterGateway.print(message));
+            futures.add(printerGateway.print(message));
         }
-
         log.info("Reading responses");
         for (Future<Message<String>> future : futures) {
             log.info("Future message: {}", future.get().getPayload());
         }
         log.info("------------------------------------");
-    }
-
-
-    public static class CustomMessageComparator implements Comparator<Message<String>> {
-
-        @Override
-        public int compare(Message<String> o1, Message<String> o2) {
-            boolean oneIsEven = o1.getPayload().charAt(o1.getPayload().length() - 1) % 2 == 0;
-            boolean twoIsEven = o2.getPayload().charAt(o2.getPayload().length() - 1) % 2 == 0;
-            return Boolean.compare(oneIsEven, twoIsEven);
-        }
     }
 }

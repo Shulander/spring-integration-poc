@@ -8,7 +8,7 @@ import org.springframework.messaging.Message;
 public class PrintService {
 
     public Message<String> printMessage(Message<String> message) {
-        log.info(message.getPayload());
+        log.info("String payload: {}", message.getPayload());
 
 //        throw new RuntimeException("Error printing message");
         return MessageBuilder.withPayload("Response Message for messageId: " + message.getHeaders().get("id")).build();

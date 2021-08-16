@@ -1,4 +1,4 @@
-package us.vicentini.integration.runner;
+package us.vicentini.integration.runner.endpoint;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -18,31 +18,43 @@ import java.util.concurrent.Future;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@ConditionalOnProperty(value = "runner.QueueChannelAppRunner", havingValue = "true", matchIfMissing = true)
-public class QueueChannelAppRunner implements ApplicationRunner {
+@ConditionalOnProperty(value = "runner.endpoint.PayloadTypeRouterAppRunner", havingValue = "true",
+        matchIfMissing = true)
+public class PayloadTypeRouterAppRunner implements ApplicationRunner {
 
-    private final PrinterGateway queuePrinterGateway;
+    private final PrinterGateway payloadRouterGateway;
 
 
     @SneakyThrows
     @Override
     public void run(ApplicationArguments args) {
-        log.info("RUNNING QueueChannelAppRunner !!!");
+        log.info("RUNNING PayloadTypeRouterAppRunner !!!");
         List<Future<Message<String>>> futures = new ArrayList<>();
-
         for (int i = 0; i < 10; i++) {
-            Message<String> message = MessageBuilder.withPayload("Printing message payload for " + i)
-                    .setHeader("messageNumber", i)
-                    .build();
+            Message<?> message = getMessage(i);
 
             log.info("Sending Message: {}", message);
-            futures.add(queuePrinterGateway.print(message));
+            futures.add(payloadRouterGateway.print(message));
         }
-
         log.info("Reading responses");
         for (Future<Message<String>> future : futures) {
             log.info("Future message: {}", future.get().getPayload());
         }
         log.info("------------------------------------");
+    }
+
+
+    private Message<?> getMessage(int i) {
+        if (Math.random() > 0.5) {
+            return MessageBuilder.withPayload(i)
+                    .setHeader("messageNumber", i)
+                    .setPriority(i)
+                    .build();
+        } else {
+            return MessageBuilder.withPayload("Printing Message payload for " + i)
+                    .setHeader("messageNumber", i)
+                    .setPriority(i)
+                    .build();
+        }
     }
 }
